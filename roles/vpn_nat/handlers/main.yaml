@@ -1,0 +1,5 @@
+# code: language=ansible
+- name: Save iptables rules
+  shell: netfilter-persistent save
+  listen: persist iptables
+

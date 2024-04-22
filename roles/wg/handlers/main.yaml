@@ -1,0 +1,7 @@
+# code: language=ansible
+- name: Restart wg
+  service:
+    name: "wg-quick@{{ item }}.service"
+    state: restarted
+  loop:
+    - wg0

@@ -1,0 +1,73 @@
+- name: Install lego
+  ansible.builtin.unarchive:
+    src: https://github.com/go-acme/lego/releases/download/v{{ lego_version }}/lego_v{{ lego_version }}_linux_amd64.tar.gz
+    dest: /usr/local/bin
+    include: lego
+    remote_src: true
+
+- name: Install gost
+  ansible.builtin.unarchive:
+    src: https://github.com/go-gost/gost/releases/download/v{{ gost_version }}/gost_{{ gost_version }}_linux_amd64.tar.gz
+    dest: /usr/local/bin
+    include: gost
+    remote_src: true
+
+- name: Update DNS
+  ansible.builtin.uri:
+    url: https://freemyip.com/update?token={{ freemyip_token }}&domain={{ freemyip_domain }}
+    return_content: true
+  register: dns_answer
+  failed_when: "'ERROR' in dns_answer.content"
+
+- name: Create cert with lego
+  command:
+    cmd: /usr/local/bin/lego -a --email {{ lego_email }} --dns freemyip --domains {{ freemyip_domain }}  --path /etc/lego run
+    creates: /etc/lego
+  environment:
+    FREEMYIP_TOKEN: "{{ freemyip_token  }}"
+
+- name: Create units for lego
+  template:
+    src: "lego.{{ item }}.j2"
+    dest: "/etc/systemd/system/lego.{{ item }}"
+    mode: "0644"
+  loop:
+    - service
+    - timer
+  notify:
+    - Reload systemd for user
+
+- name: Create units for gost-proxy
+  template:
+    src: "gost-proxy.{{ item }}.j2"
+    dest: "/etc/systemd/system/gost-proxy.{{ item }}"
+    mode: "0644"
+  loop:
+    - service
+  notify:
+    - Reload systemd for user
+    - Restart gost-proxy
+
+- name: Create config for gost-proxy
+  template:
+    src: "gost-proxy-config.yaml.j2"
+    dest: "/etc/gost-proxy-config.yaml"
+    mode: "0644"
+  notify:
+    - Reload systemd for user
+    - Restart gost-proxy
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Enable lego timer
+  systemd:
+    service: lego.timer
+    enabled: true
+    state: started
+
+- name: Enable gost-proxy timer
+  systemd:
+    service: gost-proxy
+    enabled: true
+    state: started

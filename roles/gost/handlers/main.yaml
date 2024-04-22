@@ -1,0 +1,12 @@
+# code: language=ansible
+- name: Reload systemd for user
+  systemd:
+    daemon_reload: true
+- name: Restart lego
+  service:
+    name: lego
+    state: restarted
+- name: Restart gost-proxy
+  service:
+    name: gost-proxy
+    state: restarted

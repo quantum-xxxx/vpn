@@ -1,0 +1,32 @@
+# code: language=ansible
+- name: Install packages
+  apt:
+    name:
+      - iptables-persistent
+    update_cache: true
+
+- name: Configure NAT rules
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: "{{ ansible_default_ipv4.interface }}"
+    source: "{{ item }}"
+    jump: MASQUERADE
+  loop:
+    - 192.168.35.0/24
+    - 192.168.36.0/24
+  notify:
+    - Save iptables rules
+
+
+- name: Enable ipv4 ip_forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+
+- name: Enable iptables
+  service:
+    name: iptables
+    state: started
+    enabled: true

@@ -1,0 +1,7 @@
+[Unit]
+Description=Lego
+
+[Service]
+Type=oneshot
+Environment="FREEMYIP_TOKEN={{ freemyip_token }}"
+ExecStart=/usr/local/bin/lego  --email {{ lego_email }} --dns freemyip --domains {{ freemyip_domain }} --path /etc/lego renew

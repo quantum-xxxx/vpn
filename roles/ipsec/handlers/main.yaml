@@ -1,0 +1,9 @@
+# code: language=ansible
+- name: Restart ipsec
+  service:
+    name: strongswan-starter.service
+    state: restarted
+- name: Restart xl2tpd
+  service:
+    name: xl2tpd.service
+    state: restarted

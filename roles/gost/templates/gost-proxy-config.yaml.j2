@@ -1,0 +1,24 @@
+services:
+  - name: service-0
+    addr: :443
+    handler:
+      type: http
+      auth:
+        username: {{ gost_user }}
+        password: {{ gost_user_pass }}
+      metadata:
+        knock: fml.com
+        probeResistance: code:500
+    listener:
+      type: tls
+      tls:
+        certFile: /etc/lego/certificates/{{ freemyip_domain }}.crt
+        keyFile: /etc/lego/certificates/{{ freemyip_domain }}.key
+      metadata:
+        knock: fml.com
+        probeResistance: code:500
+    metadata:
+      knock: fml.com
+      probeResistance: code:500
+api:
+  addr: :18080

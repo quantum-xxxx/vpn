@@ -1,0 +1,13 @@
++mschap-v2
+ipcp-accept-local
+ipcp-accept-remote
+noccp
+auth
+mtu 1450
+mru 1450
+proxyarp
+lcp-echo-failure 2
+lcp-echo-interval 5
+connect-delay 5000
+ms-dns 8.8.8.8
+ms-dns 8.8.4.4

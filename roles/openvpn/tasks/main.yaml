@@ -1,0 +1,23 @@
+# code: language=ansible
+- name: Install packages
+  apt:
+    name:
+      - openvpn
+    update_cache: true
+- name: Copy /etc/openvpn/server/main.conf
+  copy:
+    src: server-main.conf
+    dest: /etc/openvpn/server/main.conf
+    mode: "0644"
+  notify:
+    - Restart openvpn
+- name: Enable openvpn-server@main.service
+  service:
+    name: openvpn-server@main.service
+    state: started
+    enabled: true
+- name: Enable ipv4 ip_forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true

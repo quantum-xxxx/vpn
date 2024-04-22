@@ -1,0 +1,35 @@
+# code: language=ansible
+- name: Install packages
+  apt:
+    name:
+      - xl2tpd
+      - strongswan
+    update_cache: true
+- name: Copy xl2tpd files to /etc/ppp/
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/ppp/{{ item }}"
+    mode: 0600
+  loop:
+    - options.xl2tpd
+    - chap-secrets
+  notify:
+    - Restart xl2tpd
+- name: Copy ipsec files to /etc/
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/{{ item }}"
+    mode: 0600
+  loop:
+    - ipsec.conf
+    - ipsec.secrets
+  notify:
+    - Restart ipsec
+- name: Enable services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - xl2tpd.service
+    - strongswan-starter

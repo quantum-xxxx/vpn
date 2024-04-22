@@ -1,0 +1,5 @@
+# code: language=ansible
+- name: Restart openvpn
+  service:
+    name: openvpn-server@main.service
+    state: restarted

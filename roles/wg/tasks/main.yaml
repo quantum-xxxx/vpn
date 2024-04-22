@@ -1,0 +1,22 @@
+# code: language=ansible
+- name: Install packages
+  apt:
+    name:
+      - wireguard
+    update_cache: true
+- name: Copy /etc/wireguard/
+  template:
+    src: "{{ item }}.conf"
+    dest: "/etc/wireguard/{{ item }}.conf"
+    mode: "0600"
+  loop:
+    - wg0
+  notify:
+    - Restart wg
+- name: Enable openvpn-server@main.service
+  service:
+    name: "wg-quick@{{ item }}.service"
+    state: started
+    enabled: true
+  loop:
+    - wg0

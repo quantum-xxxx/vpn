@@ -1,0 +1,9 @@
+{
+    "server":["::1", "{{ ansible_default_ipv4.address }}"],
+    "mode":"tcp_and_udp",
+    "server_port":15348,
+    "local_port":12711,
+    "password":"{{ shadowsocks_secret }}",
+    "timeout":60,
+    "method":"chacha20-ietf-poly1305"
+}

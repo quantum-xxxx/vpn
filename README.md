@@ -71,7 +71,7 @@ when change
 
 ###  Shadowsocks
 
-[openvpn](roles/shadowsocks)
+[shadowsocks](roles/shadowsocks)
 
 **Documentation IN PROGRESS**
 

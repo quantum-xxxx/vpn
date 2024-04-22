@@ -1,4 +1,4 @@
-** VPNs playbooks in Ansible **
+**VPNs playbooks in Ansible**
 
 - [Main requirements](#main-requirements)
 - [Preparation](#preparation)

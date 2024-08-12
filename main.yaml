@@ -1,0 +1,59 @@
+---
+- name: Execute VPNs NAT roles
+  hosts: vpn
+  gather_facts: true
+  become: true
+  roles:
+    - vpn_nat
+  tags:
+    - openvpn
+    - wg
+    - ipsec
+
+
+- name: Execute VPNs roles for go gost
+  hosts: vpn
+  gather_facts: true
+  become: true
+  roles:
+    - gost
+  tags:
+    - gost
+
+
+- name: Execute VPNs roles for openvpn
+  hosts: vpn
+  gather_facts: true
+  become: true
+  roles:
+    - openvpn
+  tags:
+    - openvpn
+
+
+- name: Execute VPNs roles for wg
+  hosts: vpn
+  gather_facts: true
+  become: true
+  roles:
+    - wg
+  tags:
+    - wg
+
+- name: Execute VPNs roles for shadowsocks
+  hosts: vpn
+  gather_facts: true
+  become: true
+  roles:
+    - shadowsocks
+  tags:
+    - shadowsocks
+
+- name: Execute VPNs roles for ipsec
+  hosts: vpn
+  gather_facts: true
+  become: true
+  roles:
+    - ipsec
+  tags:
+    - ipsec

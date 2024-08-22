@@ -25,7 +25,7 @@
    1. Create VM
    2. Login to VM via SSH
    3. If you login as not user root, execute `sudo su -`
-   4. Upgrade all soft and install needed software by `yum update && yum upgrade -y && yum install -y ansible git && reboot`
+   4. Upgrade all soft and install needed software by `apt update && apt upgrade -y && apt install -y ansible git && reboot`
    6. Clone this repo by `cd /root && git clone https://github.com/quantum-xxxx/vpn.git`
 
 

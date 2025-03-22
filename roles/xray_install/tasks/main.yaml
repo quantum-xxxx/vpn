@@ -1,0 +1,9 @@
+- name: Check if xray exist
+  stat:
+    path: /usr/local/bin/xray
+  register: stat_result
+
+- name: Install xray
+  shell:
+    cmd: bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
+  when: not stat_result.stat.exists

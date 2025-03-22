@@ -1,0 +1,37 @@
+- name: Create /etc/caddy
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - /etc/caddy
+    - /etc/caddy/sites/
+- name: Install python3 dependencies
+  apt:
+    name:
+      - python3-urllib3
+      - python3-idna
+      - python3-certifi
+    update_cache: true
+- name: Create caddy docker volumes
+  docker_volume:
+    name: "{{ item }}"
+  loop:
+    - caddy_config
+    - caddy_data
+    - caddy_www
+- name: Start caddy
+  docker_container:
+    name: caddy
+    image: caddy:2.9-alpine
+    network_mode: host
+    restart_policy: always
+    state: started
+    volumes: "{{ caddy_volumes | union(caddy_volumes_disk) }}"
+- name: Copy Caddyfile
+  copy:
+    src: Caddyfile
+    dest: /etc/caddy/Caddyfile
+    mode: "0644"
+  notify:
+    - Restart caddy

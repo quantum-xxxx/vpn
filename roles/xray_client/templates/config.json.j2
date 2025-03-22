@@ -1,0 +1,117 @@
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log"
+  },
+  "stats": {},
+  "metrics": {
+      "tag": "metrics_out"
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserUplink": true,
+        "statsUserDownlink": true
+      }
+    },
+    "system": {
+        "statsInboundUplink": true,
+        "statsInboundDownlink": true,
+        "statsOutboundUplink": true,
+        "statsOutboundDownlink": true
+    }
+  },
+  "api": {
+    "tag": "api",
+    "listen": "127.0.0.1:28080",
+    "services": ["HandlerService", "LoggerService", "StatsService", "RoutingService"]
+  },
+  "inbounds":[
+    {
+      "port":"22080",
+      "protocol":"socks",
+      "settings":{
+        "auth":"noauth",
+        "udp":false
+      }
+    },
+    {
+      "port":"22081",
+      "protocol":"http",
+      "settings":{}
+    },
+    {
+      "listen": "127.0.0.1",
+      "port": 12345,
+      "protocol": "dokodemo-door",
+      "settings": {
+          "address": "127.0.0.1"
+      },
+      "tag": "metrics_in"
+    }
+  ],
+  "outbounds":[
+    {
+      "protocol":"vless",
+      "settings":{
+        "vnext":[
+          {
+            "address":"{{ xray_server }}",
+            "port":443,
+            "users":[
+              {
+                "id":"{{ id }}",
+                "encryption":"none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings":{
+        "network":"xhttp",
+        "xhttpSettings":{
+          "mode": "stream-one",
+          "path":"/some-xhttp-path",
+          "security": "tls"
+        },
+        "security": "tls"
+       }
+    },
+    {
+      "tag":"direct",
+      "protocol":"freedom",
+      "settings":{}
+    },
+    {
+      "tag":"blocked",
+      "protocol":"blackhole",
+      "settings":{}
+    }
+  ],
+  "routing":{
+    "domainStrategy":"IPOnDemand",
+    "rules":[
+      {
+        "type":"field",
+        "ip":[
+          "geoip:ru",
+          "geoip:private",
+        ],
+        "outboundTag":"direct"
+      },
+      {
+        "type": "field",
+        "inboundTag": [
+            "metrics_in"
+        ],
+        "outboundTag": "metrics_out"
+      },
+      {
+        "type": "field",
+        "domain": ["geosite:category-ads"],
+        "outboundTag": "blocked"
+      }
+    ]
+  }
+}

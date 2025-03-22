@@ -1,0 +1,92 @@
+{
+  "log": {
+    "loglevel": "warning",
+    "error": "/var/log/xray/error.log",
+    "access": "/var/log/xray/access.log"
+  },
+  "stats": {},
+  "api": {
+    "tag": "api",
+    "listen": "127.0.0.1:28080",
+    "services": ["HandlerService", "LoggerService", "StatsService", "RoutingService"]
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserUplink": true,
+        "statsUserDownlink": true
+      }
+    },
+    "system": {
+        "statsInboundUplink": true,
+        "statsInboundDownlink": true,
+        "statsOutboundUplink": true,
+        "statsOutboundDownlink": true
+    }
+  },
+  "inbounds": [
+    {
+      "port": 4004,
+      "listen": "127.0.0.1",
+      "protocol": "vless",
+      "settings": {
+        "clients": {{ xray_server_clients | to_nice_json(indent=4) }},
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "path": "/some-xhttp-path"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    },
+    {
+      "listen": "127.0.0.1",
+      "port": 12345,
+      "protocol": "dokodemo-door",
+      "settings": {
+          "address": "127.0.0.1"
+      },
+      "tag": "metrics_in"
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {}
+    },
+    {
+      "tag": "blocked",
+      "protocol": "blackhole",
+      "settings": {}
+    }
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "blocked"
+      },
+      {
+          "type": "field",
+          "inboundTag": [
+              "metrics_in"
+          ],
+          "outboundTag": "metrics_out"
+      }
+    ]
+  }
+}

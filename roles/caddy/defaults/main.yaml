@@ -1,0 +1,7 @@
+caddy_volumes:
+  - /etc/caddy:/etc/caddy
+  - caddy_config:/config
+  - caddy_data:/data
+  - caddy_www:/www
+caddy_volumes_disk:
+  - /big/var/www/share:/var/www/share

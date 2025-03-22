@@ -1,0 +1,19 @@
+- name: Create /var/lib/docker/volumes/caddy_www/_data/storage
+  file:
+    path: /var/lib/docker/volumes/caddy_www/_data/storage
+    state: directory
+    mode: "0644"
+- name: Copy Caddyfile
+  template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/sites/file-storage.caddy
+    mode: "0644"
+  notify:
+    - Restart caddy
+- name: Copy xray server config
+  template:
+    src: config.json.j2
+    dest: /usr/local/etc/xray/config.json
+    mode: "0644"
+  notify:
+    - Restart xray

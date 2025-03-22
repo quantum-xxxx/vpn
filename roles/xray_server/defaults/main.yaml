@@ -1,0 +1,12 @@
+xray_server_site: some.your.server.com
+xray_server_clients:
+    - id: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          blabla
+      email: user_one@gmail.com
+      level: 0
+    - id: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          blabla
+      email: user_two@gmail.com
+      level: 0

@@ -10,7 +10,6 @@
     - wg
     - ipsec
 
-
 - name: Execute VPNs roles for go gost
   hosts: vpn
   gather_facts: true
@@ -20,7 +19,6 @@
   tags:
     - gost
 
-
 - name: Execute VPNs roles for openvpn
   hosts: vpn
   gather_facts: true
@@ -29,7 +27,6 @@
     - openvpn
   tags:
     - openvpn
-
 
 - name: Execute VPNs roles for wg
   hosts: vpn
@@ -57,3 +54,21 @@
     - ipsec
   tags:
     - ipsec
+
+- name: Deploy xray server
+  hosts: xray_server
+  gather_facts: false
+  roles:
+    - xray_install
+    - xray_server
+  tags:
+    - xray_server
+
+- name: Deploy xray client
+  hosts: xray_client
+  gather_facts: false
+  roles:
+    - xray_install
+    - xray_client
+  tags:
+    - xray_client

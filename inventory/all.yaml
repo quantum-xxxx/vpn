@@ -4,3 +4,15 @@ all:
       hosts:
         127.0.0.1:
           ansible_connection: local
+    xray_server:
+      hosts:
+        127.0.0.1:
+          ansible_connection: local
+    xray_client:
+      hosts:
+        # some server in LAN, create proxy server without auth
+        192.168.0.5:
+          xray_server: some.your.server.com
+          id: !vault |
+            $ANSIBLE_VAULT;1.1;AES256
+            blablabla

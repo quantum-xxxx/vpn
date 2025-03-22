@@ -108,3 +108,9 @@ when change
 [ipsec](roles/ipsec)
 
 **Documentation IN PROGRESS**
+
+### Xray
+
+* [caddy as revers proxy](roles/caddy) - reverse proxy with ssl
+[xray xhttp server](roles/xray_server) - create xray server with xhttp
+[xray xhttp client](roles/xray_client) - create xray client with xhttp connection to server and http and socks proxy without auth (for local home network)
